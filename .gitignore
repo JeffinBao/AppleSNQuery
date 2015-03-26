@@ -24,3 +24,12 @@ proguard/
 
 # Log Files
 *.log
+
+# classpath
+*.class
+
+# DS_Store
+*.DS_Store
+
+# project
+*.project
