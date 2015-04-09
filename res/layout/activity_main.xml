@@ -1,16 +1,83 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.applesnquery.app.MainActivity" >
-
+    android:background="#e6e6e6"
+    android:orientation="vertical"
+    android:focusableInTouchMode="true" >
+            
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:gravity="center"
+        android:text="苹果序列号查询"
+        android:textSize="24sp"
+        android:textColor="#FFFFFF"
+        android:background="#4CAF50" />
+    
+    <TextView 
+        android:layout_width="match_parent"
+        android:layout_height="0dp"        
+        android:layout_weight="1" />
+                
+   <EditText
+        android:id="@+id/edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"        
+        android:layout_gravity="center"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:hint="请输入序列号..."
+        android:textColorHint="#4CAF50"
+        android:maxLines="2"
+        android:gravity="center"
+        android:textColor="#3C4146"
+        android:background="@drawable/edit_text_search" />  
+        
+   <TextView
+       android:layout_width="match_parent"
+       android:layout_height="0dp"       
+       android:layout_weight="0.5" />
 
-</RelativeLayout>
+    <Button 
+        android:id="@+id/search_button"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"       
+        android:layout_marginLeft="100dp"
+        android:layout_marginRight="100dp"
+        android:text="开始查询"
+        android:textColor="#FFFFFF"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/rounded_edit_text"/>
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"        
+        android:layout_weight="0.5" />
+    
+
+                
+    <ListView
+        android:id="@+id/search_history_listview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="6"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="@drawable/listview_style" >
+            
+    </ListView>
+    
+    <Button
+        android:id="@+id/clear_history_button"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp" 
+        android:layout_marginBottom="10dp"  
+        android:text="清空查询历史"
+        android:textSize="16sp"
+        android:textColor="#3c4146"
+        android:background="#c8e6c9" />
+
+
+</LinearLayout>

@@ -7,20 +7,38 @@
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="19" />
+    
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    
 
-    <application
+    <application android:name="com.applesnquery.app.MyApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        
+        <meta-data
+            android:name="com.thinkland.juheapi.openid"
+            android:value="JHd1f3381f2bd72fe420b35f7142ce2237" />
+        
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:launchMode="singleTask"
+            android:label="@string/app_name" >          
+            
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>   
+        </activity>
+        
+        <activity
+            android:name=".ResultActivity">         
         </activity>
     </application>
 
