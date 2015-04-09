@@ -3,8 +3,15 @@
 ---
 
 AppleSNQuery is an application used for querying device information of Apple,which includes device activated information,warranty information,etc.
+Only by typing your device serial number and click query button,you can get the information of your Apple device.
 
 - [https://github.com/JeffinBao/AppleSNQuery](https://github.com/JeffinBao/AppleSNQuery])
+
+## Function Introduction (Chinese Version)
+
+---
+
+![](http://ww4.sinaimg.cn/bmiddle/84460b13jw1eqzb1fg589j20ri8r61hp.jpg)
 
 ## Where to Download 
 
