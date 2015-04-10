@@ -17,7 +17,7 @@
 
     <application android:name="com.applesnquery.app.MyApplication"
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/search_icon"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         
@@ -28,7 +28,7 @@
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTask"
-            android:label="@string/app_name" >          
+             >          
             
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
