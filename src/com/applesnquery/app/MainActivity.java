@@ -4,11 +4,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -16,6 +19,7 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -73,30 +77,12 @@ public class MainActivity extends Activity {
 				String serialNumber=SnEditText.getText().toString().toUpperCase();
 								
 				if(serialNumber.length()==12){	
-					SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-					String currentTime=sdf.format(new Date(System.currentTimeMillis()));
-					List<String> snList=new ArrayList<String>();//store existing serial number in db
 					
-					ContentValues values=new ContentValues();
-		            Cursor cursor=db.query("search_history",null,null,null,null,null,null);
-		            if(cursor.moveToFirst()){
-		            	do{
-		            		String serialNum=cursor.getString(cursor.getColumnIndex("sn"));
-		            		snList.add(serialNum);
-		            	}while(cursor.moveToNext());
-		            }
-		            
-		            if(snList.contains(serialNumber)){
-		            	values.put("time", currentTime);
-		            	db.update("search_history", values, "sn=?", new String[]{serialNumber});//update time of specific serial number
-		            }else{
-						values.put("sn", serialNumber);
-						values.put("time", currentTime);
-						db.insert("search_history", null, values);	//insert if there's no such serial number in db            	
-		            }
-		            
+					InputMethodManager imm=(InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+					imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+							            
 					ResultActivity.actionStart(MainActivity.this, serialNumber);
-					
+						
 					finish();//kill MainActivity process
 					
 				}else if(serialNumber.length()==0){

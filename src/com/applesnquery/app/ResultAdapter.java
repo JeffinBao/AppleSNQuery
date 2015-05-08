@@ -40,9 +40,9 @@ public class ResultAdapter extends ArrayAdapter<ResultInfo> {
 		
 		viewHolder.resultInfoItem.setText(resultInfo.getItem());
 		viewHolder.resultInfoContent.setText(resultInfo.getInfo());
-		if(position%2==1){
-			view.setBackgroundColor(Color.parseColor("#c8e6c9"));//convert color mode from hex to int
-		}
+
+		view.setBackgroundColor(Color.parseColor("#c8e6c9"));//convert color mode from hex to int
+		
 		return view;
 	}
 	

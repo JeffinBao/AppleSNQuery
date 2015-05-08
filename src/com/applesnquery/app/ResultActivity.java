@@ -1,7 +1,9 @@
 package com.applesnquery.app;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -13,13 +15,17 @@ import com.thinkland.sdk.android.Parameters;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +34,8 @@ public class ResultActivity extends Activity {
 	private TextView snText;
 	private List<ResultInfo> resultList;
 	private List<String> errorReasonList=new ArrayList<String>();
+	private ProgressBar progressBarResult;
+	private MyDatabaseHelper dbHelper;
 	
 	/**
 	 * 
@@ -131,16 +139,20 @@ public class ResultActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.result_activity);
+		setContentView(R.layout.activity_result);
 		
-		String sn=getIntent().getStringExtra("sn_data");
+		dbHelper=new MyDatabaseHelper(this,"search_history.db",null,1);
+		
+		final String sn=getIntent().getStringExtra("sn_data");
 		snText=(TextView)findViewById(R.id.sn_text);
 		snText.setText(sn);
 		
-		final ProgressDialog progressDialog=new ProgressDialog(ResultActivity.this);
-		progressDialog.setMessage("结果加载中，请稍后...");
-		progressDialog.setCancelable(true);
-		progressDialog.show();
+		//final ProgressDialog progressDialog=new ProgressDialog(ResultActivity.this);
+		//progressDialog.setMessage("结果加载中，请稍后...");
+		//progressDialog.setCancelable(true);
+		//progressDialog.show();
+		progressBarResult=(ProgressBar)findViewById(R.id.progressbar_result);
+		progressBarResult.setVisibility(View.VISIBLE);
 		
 		Parameters params=new Parameters();
 		params.add("sn",sn);
@@ -157,7 +169,31 @@ public class ResultActivity extends Activity {
 						ListView listView=(ListView)findViewById(R.id.result_listview);
 						ResultAdapter adapter=new ResultAdapter(ResultActivity.this,R.layout.result_info_display,resultList);
 						listView.setAdapter(adapter);
-						progressDialog.dismiss();//close progress dialog once the result display
+						progressBarResult.setVisibility(View.GONE);
+						
+						SQLiteDatabase db=dbHelper.getWritableDatabase(); 
+						
+						SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+						String currentTime=sdf.format(new Date(System.currentTimeMillis()));
+						List<String> snList=new ArrayList<String>();//store existing serial number in db
+						
+						ContentValues values=new ContentValues();
+			            Cursor cursor=db.query("search_history",null,null,null,null,null,null);
+			            if(cursor.moveToFirst()){
+			            	do{
+			            		String serialNum=cursor.getString(cursor.getColumnIndex("sn"));
+			            		snList.add(serialNum);
+			            	}while(cursor.moveToNext());
+			            }
+			            
+			            if(snList.contains(sn)){
+			            	values.put("time", currentTime);
+			            	db.update("search_history", values, "sn=?", new String[]{sn});//update time of specific serial number
+			            }else{
+							values.put("sn", sn);
+							values.put("time", currentTime);
+							db.insert("search_history", null, values);	//insert if there's no such serial number in db            	
+			            }
 					}else{
 						String errorInfo=errorReasonList.get(0);//error infomation from errorReasonList
 						Toast.makeText(getApplicationContext(), errorInfo, Toast.LENGTH_SHORT).show();
