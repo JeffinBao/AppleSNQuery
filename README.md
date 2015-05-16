@@ -17,13 +17,13 @@ Only by typing your device serial number and click query button,you can get the 
 
 ---
 
-- [Google Play]()
+- [Google Play](https://play.google.com/store/apps/details?id=com.applesnquery.app)
 
-- [WanDouJia(豌豆荚)]()
+- [WanDouJia(豌豆荚)](http://www.wandoujia.com/apps/com.applesnquery.app)
 
-- [XiaoMi(小米应用商店)]()
+- [XiaoMi(小米应用商店)](http://app.mi.com/detail/91541)
 
-- [Smartisan(锤子应用商店)]()
+- [Flyme(魅族应用商店)](http://app.meizu.com/apps/public/detail?package_name=com.applesnquery.app)
 
 ## Screen Shots
 

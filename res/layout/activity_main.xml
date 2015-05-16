@@ -58,17 +58,15 @@
     
 
                 
-    <ListView
+    <com.baoyz.swipemenulistview.SwipeMenuListView
         android:id="@+id/search_history_listview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="6"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
-        android:background="@drawable/listview_search_history"
-        >
-            
-    </ListView>
+        android:background="@drawable/listview_search_history" />
+
     
     <Button
         android:id="@+id/clear_history_button"

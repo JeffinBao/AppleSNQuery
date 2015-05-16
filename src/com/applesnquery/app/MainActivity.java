@@ -4,19 +4,24 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import com.baoyz.swipemenulistview.SwipeMenu;
+import com.baoyz.swipemenulistview.SwipeMenuCreator;
+import com.baoyz.swipemenulistview.SwipeMenuItem;
+import com.baoyz.swipemenulistview.SwipeMenuListView;
+import com.baoyz.swipemenulistview.SwipeMenuListView.OnMenuItemClickListener;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.view.KeyEvent;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
@@ -32,30 +37,28 @@ public class MainActivity extends Activity {
 	
 	private Button searchButton;
 	private EditText SnEditText;
-	private ListView searchHistoryListview;
+	private SwipeMenuListView searchHistoryListview;
 	private Button clearHistoryButton;
 	private List<SearchHistoryInfo> searchHistoryList;
 	private MyDatabaseHelper dbHelper;
+	
+    private long exitTime=0;
+	
+	private void exitApp(){
+		if(System.currentTimeMillis()-exitTime>2000){
+			Toast.makeText(getApplicationContext(), "再按一次退出", Toast.LENGTH_SHORT).show();
+			exitTime=System.currentTimeMillis();
+		}else{
+			finish();
+		}
+	}
 	
 	/**
 	 * exit application with an confirmation dialog
 	 */
 	public void onBackPressed(){
-		AlertDialog.Builder builder=new AlertDialog.Builder(MainActivity.this);
-		builder.setTitle("系统提示");
-		builder.setMessage("确认退出程序？");
-		builder.setPositiveButton("确定",new DialogInterface.OnClickListener() {
-			
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
-				finish();
-			}
-		});
-		builder.setNegativeButton("取消", null);
-		builder.show();
+		exitApp();
 	}
-
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +109,7 @@ public class MainActivity extends Activity {
           cursor.close();   
             
 		  SearchHistoryAdapter adapter=new SearchHistoryAdapter(MainActivity.this,R.layout.search_history_display,searchHistoryList);
-		  searchHistoryListview=(ListView)findViewById(R.id.search_history_listview);
+		  searchHistoryListview=(SwipeMenuListView)findViewById(R.id.search_history_listview);
 		  clearHistoryButton=(Button)findViewById(R.id.clear_history_button);
 		  /**
 		   * whether there's any data in db,if so,searchHistoryListview and clearHistoryButton is VISIBLE.
@@ -130,6 +133,62 @@ public class MainActivity extends Activity {
 				}
 			  });
 			  
+			  InitSwipeMenuListView();
+			  
+			  searchHistoryListview.setOnMenuItemClickListener(new OnMenuItemClickListener(){
+
+					@Override
+					public boolean onMenuItemClick(int position,
+							SwipeMenu menu, int index) {
+						// TODO Auto-generated method stub
+						switch(index){
+						case 0:
+							List<SearchHistoryInfo> searchHistoryListTemp=new ArrayList<SearchHistoryInfo>();
+					        Cursor cursor=db.query("search_history",null,null,null,null,null,null);
+					        if(cursor.moveToFirst()){
+					        	do{
+					         		String serialNum=cursor.getString(cursor.getColumnIndex("sn"));
+					        		String timeNow=cursor.getString(cursor.getColumnIndex("time"));
+					         		SearchHistoryInfo searchHistoryInfo=new SearchHistoryInfo(serialNum,timeNow);
+					                searchHistoryListTemp.add(searchHistoryInfo);
+					           	  }while(cursor.moveToNext());
+					          }
+					          cursor.close(); 
+					          
+							SearchHistoryInfo searchHistoryInfoSN=SearchHistoryAdapter.getItem(position,searchHistoryListTemp);
+							
+							//TextView tv=(TextView)findViewById(R.id.search_history_sn);
+							String snString=searchHistoryInfoSN.getSearchSN();
+							db.delete("search_history", "sn=?", new String[]{snString});
+							searchHistoryListTemp.clear();
+							  
+							Cursor cursorAfterDelete=db.query("search_history",null,null,null,null,null,null);
+					        if(cursorAfterDelete.moveToFirst()){
+					        	do{
+					         		String serialNum=cursorAfterDelete.getString(cursorAfterDelete.getColumnIndex("sn"));
+					        		String timeNow=cursorAfterDelete.getString(cursorAfterDelete.getColumnIndex("time"));
+					         		SearchHistoryInfo searchHistoryInfo=new SearchHistoryInfo(serialNum,timeNow);
+					                searchHistoryListTemp.add(searchHistoryInfo);
+					           	  }while(cursorAfterDelete.moveToNext());
+					          }
+					          cursorAfterDelete.close();
+					          
+					        if(cursorAfterDelete.getCount()>0){
+					        	SearchHistoryAdapter adapter=new SearchHistoryAdapter(MainActivity.this,R.layout.search_history_display,searchHistoryListTemp);
+					            searchHistoryListview.setAdapter(adapter);
+					        }else{
+					        	searchHistoryListview.setVisibility(View.INVISIBLE);
+								clearHistoryButton.setVisibility(View.INVISIBLE);
+					        }
+					          
+							break;
+
+						}
+						return false;
+					}
+					  
+				  });
+			  
 		      clearHistoryButton.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -147,9 +206,7 @@ public class MainActivity extends Activity {
 							// TODO Auto-generated method stub
 							db.delete("search_history", null, null);
 							searchHistoryList.clear();
-							//SearchHistoryAdapter adapter=new SearchHistoryAdapter(MainActivity.this,R.layout.search_history_display,searchHistoryList);
-							//searchHistoryListview=(ListView)findViewById(R.id.search_history_listview);
-							//searchHistoryListview.setAdapter(adapter); 
+
 							clearHistoryButton.setVisibility(View.INVISIBLE);
 							searchHistoryListview.setVisibility(View.INVISIBLE);
 							}
@@ -166,5 +223,24 @@ public class MainActivity extends Activity {
 		  }
                     
     }
+    
+    private void InitSwipeMenuListView(){
+		  
+  	  searchHistoryListview=(SwipeMenuListView)findViewById(R.id.search_history_listview);
+		  SwipeMenuCreator creator=new SwipeMenuCreator(){
+			  public void create(SwipeMenu menu){
+				  SwipeMenuItem deleteItem=new SwipeMenuItem(getApplicationContext());
+				  deleteItem.setBackground(new ColorDrawable(Color.parseColor("#ff3030")));
+				  deleteItem.setIcon(R.drawable.ic_action_discard);
+				  deleteItem.setWidth((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 45,
+							getBaseContext().getResources().getDisplayMetrics()));
+				  
+				  menu.addMenuItem(deleteItem);
+				  				  
+			  }
+		  };
+		  searchHistoryListview.setMenuCreator(creator);
+		  
+     }
 
 }

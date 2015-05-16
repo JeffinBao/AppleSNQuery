@@ -14,7 +14,6 @@ import com.thinkland.sdk.android.JuheData;
 import com.thinkland.sdk.android.Parameters;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -36,6 +35,8 @@ public class ResultActivity extends Activity {
 	private List<String> errorReasonList=new ArrayList<String>();
 	private ProgressBar progressBarResult;
 	private MyDatabaseHelper dbHelper;
+	
+	//private SwipeBackLayout mSwipeBackLayout;
 	
 	/**
 	 * 
@@ -141,16 +142,16 @@ public class ResultActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_result);
 		
+		//mSwipeBackLayout=getSwipeBackLayout();
+		//mSwipeBackLayout.setEdgeSize(200);
+		//mSwipeBackLayout.setEdgeTrackingEnabled(SwipeBackLayout.EDGE_LEFT);
+		
 		dbHelper=new MyDatabaseHelper(this,"search_history.db",null,1);
 		
 		final String sn=getIntent().getStringExtra("sn_data");
 		snText=(TextView)findViewById(R.id.sn_text);
 		snText.setText(sn);
 		
-		//final ProgressDialog progressDialog=new ProgressDialog(ResultActivity.this);
-		//progressDialog.setMessage("结果加载中，请稍后...");
-		//progressDialog.setCancelable(true);
-		//progressDialog.show();
 		progressBarResult=(ProgressBar)findViewById(R.id.progressbar_result);
 		progressBarResult.setVisibility(View.VISIBLE);
 		

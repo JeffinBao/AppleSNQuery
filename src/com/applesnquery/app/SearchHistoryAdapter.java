@@ -5,7 +5,6 @@ package com.applesnquery.app;
 import java.util.List;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +39,10 @@ public class SearchHistoryAdapter extends ArrayAdapter<SearchHistoryInfo> {
 		viewHolder.searchTime.setText(searchHistory.getSearchTime());
 		
 		return view;
+	}
+	
+	public static SearchHistoryInfo getItem(int position,List<SearchHistoryInfo> objects){
+		return objects.get(position);
 	}
 	
 	class ViewHolder{
